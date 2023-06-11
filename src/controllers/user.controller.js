@@ -2,26 +2,26 @@ const userService = require("../services/user.service")
 const mongoose = require("mongoose")
 
 const create = async (req, res) => {
-    const {name, userName, email, password, avatar, background} = req.body
+    const { name, userName, email, password, avatar, background } = req.body
 
-    if (!name || !userName || !email || !password || !avatar || !background){
-        res.status(400).send({message: "submit all fields for registration"})
+    if (!name || !userName || !email || !password || !avatar || !background) {
+        res.status(400).send({ message: "submit all fields for registration" })
     }
 
     const user = await userService.createService(req.body)
 
-    if (!user){
-        return res.status(400).send({message: "Error creating User"})
+    if (!user) {
+        return res.status(400).send({ message: "Error creating User" })
     }
-    
+
     res.status(201).send({
         message: "User created sucessfully",
         user: {
             id: user._id,
-            name, 
-            userName, 
-            email, 
-            avatar, 
+            name,
+            userName,
+            email,
+            avatar,
             background
         }
     })
@@ -30,28 +30,63 @@ const create = async (req, res) => {
 const findAll = async (req, res) => {
     const users = await userService.findAllService()
 
-    if (users.length === 0){
-        res.status(400).send({message: "There are no resgistered users"})
+    if (users.length === 0) {
+        res.status(400).send({ message: "There are no resgistered users" })
     }
 
     res.send(users)
 }
 
-const findById = async (req, res) =>{
+const findById = async (req, res) => {
     const id = req.params.id
 
-    
-    if (!mongoose.Types.ObjectId.isValid){
-        return res.status(400).send({message: "Invalid ID"})
+
+    if (!mongoose.Types.ObjectId.isValid) {
+        return res.status(400).send({ message: "Invalid ID" })
     }
-    
+
     const user = await userService.findByIdService(id)
 
-    if(!user){
-        return res.status(400).send({message: "User not found"})
+    if (!user) {
+        return res.status(400).send({ message: "User not found" })
     }
 
     res.send(user)
 }
 
-module.exports = {create, findAll, findById}
+const update = async (req, res) => {
+    const { name, userName, email, password, avatar, background } = req.body
+
+    if (!name && !userName && !email && !password && !avatar && !background) {
+        res.status(400).send({ message: "submit at least one field for update" })
+    }
+
+    const id = req.params.id
+
+    if (!mongoose.Types.ObjectId.isValid) {
+        return res.status(400).send({ message: "Invalid ID" })
+    }
+
+    const user = await userService.findByIdService(id)
+
+    if (!user) {
+        return res.status(400).send({ message: "User not found" })
+    }
+
+    await userService.updateService(
+        id,
+        name,
+        userName,
+        email,
+        password,
+        avatar,
+        background
+    )
+
+    res.send({message: "User sucessfully updated"})
+
+
+
+}
+
+module.exports = { create, findAll, findById, update }
