@@ -1,12 +1,12 @@
-import router from 'express'
-const route = router.Router()
-import { create, findAll, findById, update }  from '../controllers/user.controller.js'
-import { validId, validUser} from '../middlewares/goblal.middlewares.js'
+import { Router } from 'express'
+const router = Router()
+import { create, findAll, findById, update } from '../controllers/user.controller.js'
+import { validId, validUser } from '../middlewares/goblal.middlewares.js'
 
-route.post('/',create)
-route.get('/', findAll)
-route.get('/:id', validId, validUser, findById)
-route.patch('/:id', validId, validUser, update)
+router.post('/', create)
+router.get('/', findAll)
+router.get('/:id', validId, validUser, findById)
+router.patch('/:id', validId, validUser, update)
 
-export default route
+export default router
 
