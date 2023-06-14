@@ -1,7 +1,7 @@
 import { Router } from 'express'
 const router = Router()
 import { create, findAll, findById, update } from '../controllers/user.controller.js'
-import { validId, validUser } from '../middlewares/goblal.middlewares.js'
+import { validId, validUser } from '../middlewares/goblal.middleware.js'
 
 router.post('/', create)
 router.get('/', findAll)
