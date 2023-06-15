@@ -1,4 +1,4 @@
-import { createService, findAllService } from "../services/news.service.js"
+import { countNews, createService, findAllService } from "../services/news.service.js"
 
 const create = async (req, res) => {
     try {
@@ -24,13 +24,62 @@ const create = async (req, res) => {
 
 const findAll = async (req, res) => {
     try {
-        const news = await findAllService()
+        let { limit, offset } = req.query
+        
+        limit = Number(limit)
+        offset = Number(offset)
+        
+        if (!limit) {
+            limit = 5
+        }
+        
+        if (!offset) {
+            offset = 0
+        }
+        
+        
+        
+        const total = await countNews()
+        if (offset >= total) {
+            offset = total - limit
+        }
+        const news = await findAllService(limit, offset)
+        const currentUrl = req.baseUrl
+        
+        
+        const next = offset + limit
+
+        const nextUrl = next < total ? `${currentUrl}?limit=${limit}&offset=${next}` : null
+
+        const previous = (offset - limit) < 0 ? null : offset - limit
+        const previousUrl = previous != null ? `${currentUrl}?limit=${limit}&offset=${previous}` : null
+
 
         if (news.length === 0) {
             res.status(400).send({ message: "There are no resgistered news" })
         }
 
-        res.send(news)
+        res.send({
+            nextUrl,
+            previousUrl,
+            limit,
+            offset,
+            total,
+
+            results: news.map(item => ({
+                id: item._id,
+                title: item.title,
+                text: item.text,
+                banner: item.banner,
+                likes: item.likes,
+                coments: item.coments,
+                name: item.user.name,
+                userName: item.user.userName,
+                userAvatar: item.user.avatar
+            }))
+        })
+
+        // res.send(news)
     } catch (err) {
         res.status(500).send({ message: err.message })
     }
