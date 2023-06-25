@@ -1,4 +1,16 @@
-import { countNews, createService, findAllService, topNewsService, findByIdService, searchByTitleService, byUserService, updateService} from "../services/news.service.js"
+import { 
+    countNews, 
+    createService, 
+    findAllService, 
+    topNewsService, 
+    findByIdService, 
+    searchByTitleService, 
+    byUserService, 
+    updateService, 
+    eraseService,
+    likeNewsService,
+    deleteLikeNewsService
+} from "../services/news.service.js"
 
 export const create = async (req, res) => {
     try {
@@ -206,18 +218,60 @@ export const update = async (req, res) => {
         const {id}  = req.params
 
         if (!title && !text && !banner) {
-            res.status(400).send({ message: "submit at least one field to update the post" })
+            res.status(400).send({ message: "submit at least one field to update the news" })
         }
 
         const news = await findByIdService(id)
 
         if (news.user.id != req.userId){
-            res.status(400).send({ message: "You didn't update this post" })
+            res.status(400).send({ message: "You didn't update this news" })
         }
 
         await updateService(id, title, text, banner)
-        return res.send({message: "Post successfully updated!"})
+        return res.send({message: "News successfully updated!"})
 
+    } catch (e) {
+        res.status(500).send({ message: e.message })
+    }
+}
+
+export const erase = async (req, res) => {
+    try {
+
+        const {id}  = req.params
+
+        const news = await findByIdService(id)
+
+        if (news.user.id != req.userId){
+            res.status(400).send({ message: "You didn't delete this News" })
+        }
+
+        await eraseService(id)
+
+        return res.send({message: "News deleted successfully"})
+
+
+
+    } catch (e) {
+        res.status(500).send({ message: e.message })
+    }
+}
+
+export const likeNews = async (req, res) => {
+    try {
+
+        const {id} = req.params
+        const userId = req.userId
+        
+        const newsLiked = await likeNewsService(id, userId)
+        console.log(newsLiked)
+
+        if(!newsLiked){
+            await deleteLikeNewsService(id, userId)
+            return res.status(200).send({message: "like successfully removed"})
+        }
+        
+        res.send({message: "Like done successfully"})
     } catch (e) {
         res.status(500).send({ message: e.message })
     }

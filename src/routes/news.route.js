@@ -1,7 +1,17 @@
 import { Router } from 'express'
 const router = Router()
 
-import {create, findAll, findById, topNews, searchByTitle, byUser, update} from '../controllers/news.cotroller.js'
+import {
+    create, 
+    findAll, 
+    findById, 
+    topNews, 
+    searchByTitle, 
+    byUser, 
+    update, 
+    erase,
+    likeNews
+} from '../controllers/news.cotroller.js'
 import { authMiddleware } from '../middlewares/auth.middleware.js'
 
 router.post('/', authMiddleware, create)
@@ -11,4 +21,6 @@ router.get('/search', searchByTitle)
 router.get('/byUser', authMiddleware, byUser)
 router.get('/:id', authMiddleware, findById)
 router.patch('/:id', authMiddleware, update)
+router.delete('/:id', authMiddleware, erase)
+router.patch('/like/:id', authMiddleware, likeNews)
 export default router
