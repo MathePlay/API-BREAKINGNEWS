@@ -69,9 +69,9 @@ export const findAll = async (req, res) => {
         const previousUrl = previous != null ? `${currentUrl}?limit=${limit}&offset=${previous}` : null
 
 
-        if (news.length === 0) {
-            res.status(400).send({ message: "There are no resgistered news" })
-        }
+        // if (news.length === 0) {
+        //     res.status(400).send({ message: "There are no resgistered news" })
+        // }
 
         return res.send({
             nextUrl,
