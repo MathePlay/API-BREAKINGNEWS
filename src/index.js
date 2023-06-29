@@ -7,6 +7,7 @@ import authRoute from './routes/auth.route.js'
 import newsRoute from './routes/news.route.js'
 import swaggerRoute from './routes/swagger.route.cjs'
 
+import cors from 'cors'
 
 
 dotenv.config()
@@ -14,6 +15,7 @@ dotenv.config()
 const port = process.env.PORT || 3000
 const app = express()
 
+app.use(cors()) // Use this after the variable declaration
 
 connectDatabase()
 app.use(express.json())
