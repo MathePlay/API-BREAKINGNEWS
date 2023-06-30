@@ -3,7 +3,7 @@ import News from '../models/News.js'
 export const createService = (body) => News.create(body)
 
 export const findAllService = (limit, offset) => 
-    News.find().sort({_id: -1}).skip(offset).limit(limit).populate("user")
+    News.find().sort({_id: -1}).skip(offset).limit(limit).populate("user").skip(1)
 
 export const countNews = () => News.countDocuments()
 

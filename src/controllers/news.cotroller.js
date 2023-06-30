@@ -53,7 +53,7 @@ export const findAll = async (req, res) => {
 
 
 
-        const total = await countNews()
+        const total = await countNews() -1
         if (offset >= total) {
             offset = total - limit
         }
